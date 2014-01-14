@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="58dp"
         android:drawableLeft="@drawable/plus"
-        android:onClick="onMyButtonClick"
         android:text="Добавить будильник" />
     
 	<ListView
