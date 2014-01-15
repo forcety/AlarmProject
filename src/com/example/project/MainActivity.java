@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,8 +53,21 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	if (data == null) {return;}
-	    String name = data.getStringExtra("name");
-	   // tvName.setText("Your name is " + name);
+	    String alarmName = data.getStringExtra("alarmName");
+	    String alarmTime = data.getStringExtra("alarmTime");
+	    String alarmDays = data.getStringExtra("alarmDays");
+	    
+
+	    String strHour = alarmTime.substring(0,2);  // часы
+	    String strMinute = alarmTime.substring(3,5);  // минуты
+	    
+	    alarms.add(new Alarm(alarmName, Integer.parseInt(strHour), Integer.parseInt(strMinute), "пн, вт", true));
+	    
+	    boxAdapter = new BoxAdapter(this, alarms);
+	    
+	    // настраиваем список
+	    ListView lvMain = (ListView) findViewById(R.id.lvMain);
+	    lvMain.setAdapter(boxAdapter);
 	  }
 	
 	// генерируем данные для адаптера
