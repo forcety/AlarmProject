@@ -41,9 +41,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	
 	@Override
+	// Нажали добавить будильник
 	  public void onClick(View v) {
 	    // выводим сообщение
-	    Toast.makeText(this, "Зачем вы нажали?", Toast.LENGTH_SHORT).show(); 
+	    Toast.makeText(this, "Зачем вы нажали добавить будильник?", Toast.LENGTH_SHORT).show(); 
 	    
 	    Intent intent = new Intent(this, AlarmActivity.class);
 	    startActivityForResult(intent, 1);
