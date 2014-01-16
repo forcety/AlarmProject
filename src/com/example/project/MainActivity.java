@@ -8,9 +8,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +25,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	 ArrayList<Alarm> alarms = new ArrayList<Alarm>();
 	 BoxAdapter boxAdapter;
 	 Button btnAddAlarm;
+	 
+	 private static final int CM_DELETE_ID = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +44,29 @@ public class MainActivity extends Activity implements OnClickListener {
 	    ListView lvMain = (ListView) findViewById(R.id.lvMain);
 	    lvMain.setAdapter(boxAdapter);
 	}
-
-	
+/* наработки по контекстному меню
+	  @Override
+	  public void onCreateContextMenu(ContextMenu menu, View v,
+	      ContextMenuInfo menuInfo) {
+	    super.onCreateContextMenu(menu, v, menuInfo);
+	    menu.add(0, CM_DELETE_ID, 0, "Удалить запись");
+	  }
+	  
+	  @Override
+	  public boolean onContextItemSelected(MenuItem item) {
+	    if (item.getItemId() == CM_DELETE_ID) {
+	      // получаем инфу о пункте списка
+	      AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
+	      // удаляем Map из коллекции, используя позицию пункта в списке
+	      alarms.remove(acmi.position);
+	      // уведомляем, что данные изменились
+	      boxAdapter.notifyDataSetChanged();
+	      return true;
+	    }
+	    return super.onContextItemSelected(item);
+	  }
+	  
+*/	  
 	@Override
 	// Нажали добавить будильник
 	  public void onClick(View v) {
@@ -64,17 +91,24 @@ public class MainActivity extends Activity implements OnClickListener {
 	    
 	    alarms.add(new Alarm(alarmName, Integer.parseInt(strHour), Integer.parseInt(strMinute), "пн, вт", true));
 	    
+	    
+	    // уведомляем, что данные изменились
+	    boxAdapter.notifyDataSetChanged();
+	    
+	    /* старое обновление ListView
+	    // уведомляем, что данные изменились
 	    boxAdapter = new BoxAdapter(this, alarms);
 	    
 	    // настраиваем список
 	    ListView lvMain = (ListView) findViewById(R.id.lvMain);
 	    lvMain.setAdapter(boxAdapter);
+	    */
 	  }
 	
 	// генерируем данные для адаптера
 	void fillData() {
 		alarms.add(new Alarm("Будильник 1", 18, 32, "пн, вт", true));  
-		alarms.add(new Alarm("Будильник 2", 10, 18, "вс", true));
+		alarms.add(new Alarm("Будильник 2", 10, 8, "вс", true));
 	}
 
 	@Override

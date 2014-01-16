@@ -55,8 +55,7 @@ public class BoxAdapter extends BaseAdapter {
 
 	    // заполняем View в пункте списка данными из товаров: наименование, цена
 	    // и картинка
-	    //((TextView) view.findViewById(R.id.tvDescr)).setText(a.name);
-	    ((TextView) view.findViewById(R.id.tvAlarmTime)).setText(a.hour + ":" + a.minute);
+	    ((TextView) view.findViewById(R.id.tvAlarmTime)).setText(String.format("%02d:%02d", a.hour, a.minute));  // ЧЧ:ММ - формат времени
 	    ((TextView) view.findViewById(R.id.tvDaysOfWeek)).setText(a.days + "");
 
 	    CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);
@@ -68,7 +67,16 @@ public class BoxAdapter extends BaseAdapter {
 	    cbBuy.setChecked(a.box);
 	    return view;
 	  }
-	  
+	 
+	  /*
+	  @Override
+	  protected void onListItemClick(int position, View convertView, ViewGroup parent) {
+		  View view = convertView;
+		  Alarm a = getAlarm(position);
+	        
+	        Toast.makeText(this, a.hour, Toast.LENGTH_LONG).show();
+	    }
+	  */
 	  // будильник по позиции
 	  Alarm getAlarm(int position) {
 	    return ((Alarm) getItem(position));
