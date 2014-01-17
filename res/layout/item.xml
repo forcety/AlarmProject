@@ -4,8 +4,10 @@
  android:layout_width="match_parent"
  android:layout_height="wrap_content"
  android:orientation="horizontal">
-<CheckBox
+<CheckBox 
  android:id="@+id/cbBox"
+ android:focusable="false"
+ android:focusableInTouchMode="false"		
  android:layout_width="wrap_content"
  android:layout_height="wrap_content">
 </CheckBox>

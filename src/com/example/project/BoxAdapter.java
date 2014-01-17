@@ -57,7 +57,7 @@ public class BoxAdapter extends BaseAdapter {
 	    // и картинка
 	    ((TextView) view.findViewById(R.id.tvAlarmTime)).setText(String.format("%02d:%02d", a.hour, a.minute));  // ЧЧ:ММ - формат времени
 	    ((TextView) view.findViewById(R.id.tvDaysOfWeek)).setText(a.days + "");
-
+/*
 	    CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);
 	    // присваиваем чекбоксу обработчик
 	    cbBuy.setOnCheckedChangeListener(myCheckChangList);
@@ -65,6 +65,7 @@ public class BoxAdapter extends BaseAdapter {
 	    cbBuy.setTag(position);
 	    // заполняем данными из товаров: в корзине или нет
 	    cbBuy.setChecked(a.box);
+	    */
 	    return view;
 	  }
 	 

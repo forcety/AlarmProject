@@ -43,13 +43,28 @@ public class MainActivity extends Activity implements OnClickListener {
 	    // настраиваем список
 	    ListView lvMain = (ListView) findViewById(R.id.lvMain);
 	    lvMain.setAdapter(boxAdapter);
+	    
+	    
+	    registerForContextMenu(lvMain);	    
 	}
-/* наработки по контекстному меню
+	
+
 	  @Override
-	  public void onCreateContextMenu(ContextMenu menu, View v,
-	      ContextMenuInfo menuInfo) {
-	    super.onCreateContextMenu(menu, v, menuInfo);
-	    menu.add(0, CM_DELETE_ID, 0, "Удалить запись");
+	  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		  
+		  //super.onCreateContextMenu(menu, v, menuInfo);
+		  
+		  AdapterContextMenuInfo aMenuInfo = (AdapterContextMenuInfo) menuInfo;
+		  
+		  // Получаем позицию элемента в списке
+		  int position = aMenuInfo.position;
+			
+		  // Получаем данные элемента списка
+		  Alarm data =(Alarm)boxAdapter.getItem(aMenuInfo.position);
+			
+		  
+		  menu.setHeaderTitle(String.format("%02d:%02d", data.hour, data.minute));
+		  menu.add(0, CM_DELETE_ID, 0, "Удалить запись");
 	  }
 	  
 	  @Override
@@ -66,7 +81,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	    return super.onContextItemSelected(item);
 	  }
 	  
-*/	  
+	  
 	@Override
 	// Нажали добавить будильник
 	  public void onClick(View v) {
