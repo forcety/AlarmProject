@@ -3,6 +3,7 @@ package com.example.project;
 
 import java.util.Calendar;
 
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.widget.TimePicker;
@@ -15,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AlarmActivity extends Activity implements OnClickListener {
 
@@ -33,7 +35,7 @@ public class AlarmActivity extends Activity implements OnClickListener {
 	    // TODO Auto-generated method stub
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.alarm);
-	    
+ 
 	    etAlarmName = (EditText) findViewById(R.id.etAlarmName);
 	    tvAlarmTime  = (TextView) findViewById(R.id.tvAlarmTime);
 	    tvAlarmDays = (TextView) findViewById(R.id.tvAlarmDays);
@@ -41,10 +43,27 @@ public class AlarmActivity extends Activity implements OnClickListener {
 	    btnOK = (Button) findViewById(R.id.btnOK);
 	    btnOK.setOnClickListener(this);
 	    
-	    Calendar calendar = Calendar.getInstance();
-	    myHour = calendar.get(Calendar.HOUR_OF_DAY);
-	    myMinute = calendar.get(Calendar.MINUTE);
-        tvAlarmTime.setText(String.format("%02d:%02d", myHour, myMinute));
+	    // если попали на эту форму по нажатию на Изменить запись
+	    if (MainActivity.isUpdateClicked){
+	    	
+	    	Intent intent = getIntent();
+	        
+	        int myHour = intent.getIntExtra("hour", 0);
+	        int myMinute = intent.getIntExtra("minute",0);
+	        
+	        tvAlarmTime.setText(String.format("%02d:%02d", myHour, myMinute));
+	    }
+	   
+	    // если перешли на эту форму через кнопку Добавить будильник
+	    else {
+		    //ставим текущее время
+		    Calendar calendar = Calendar.getInstance();
+		    myHour = calendar.get(Calendar.HOUR_OF_DAY);
+		    myMinute = calendar.get(Calendar.MINUTE);
+	        tvAlarmTime.setText(String.format("%02d:%02d", myHour, myMinute));
+	    }
+        
+        
 	  }
 	  
 	  public void onAlarmTimeClick(View view) {
@@ -69,15 +88,40 @@ public class AlarmActivity extends Activity implements OnClickListener {
 	      }
 	   };
 	      
+	   // кнопка ОК
 	  @Override
 	  public void onClick(View v) {
-	    Intent intent = new Intent();
-	    intent.putExtra("alarmName", etAlarmName.getText().toString());
-	    intent.putExtra("alarmTime", tvAlarmTime.getText().toString());
-	    intent.putExtra("alarmDays", tvAlarmDays.getText().toString());
+		  
+		if (!MainActivity.isUpdateClicked){ 
+			
+			Toast.makeText(this, "!isUpdateClicked", Toast.LENGTH_SHORT).show();
+			
+		    Intent intent = new Intent();
+		    intent.putExtra("alarmName", etAlarmName.getText().toString());
+		    intent.putExtra("alarmTime", tvAlarmTime.getText().toString());
+		    intent.putExtra("alarmDays", tvAlarmDays.getText().toString());
+		    
+		    setResult(RESULT_OK, intent);
+		    finish();
+		}
+	    if (MainActivity.isUpdateClicked){
+	    	
+	    	Toast.makeText(this, "isUpdateClicked, позиция = " + MainActivity.position, Toast.LENGTH_SHORT).show();
+	    	
+		    Intent intent2 = new Intent();
+		    intent2.putExtra("alarmName", etAlarmName.getText().toString());
+		    intent2.putExtra("alarmTime", tvAlarmTime.getText().toString());
+		    intent2.putExtra("alarmDays", tvAlarmDays.getText().toString());
+		    
+		    setResult(RESULT_OK, intent2);
+		    finish();
+		    
+		   // startActivity(intent2);
+
+   
+
+	    }
 	    
-	    setResult(RESULT_OK, intent);
-	    finish();
 	  }
 
 }

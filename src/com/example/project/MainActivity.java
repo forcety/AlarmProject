@@ -2,8 +2,6 @@ package com.example.project;
 
 import java.util.ArrayList;
 
-
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +24,14 @@ public class MainActivity extends Activity implements OnClickListener {
 	 BoxAdapter boxAdapter;
 	 Button btnAddAlarm;
 	 
-	 private static final int CM_DELETE_ID = 1;
+	 private static final int CM_DELETE_ID = 1;  // для контекстного меню пункт удалить
+	 private static final int CM_UPDATE_ID = 2;  // для контекстного меню пункт изменить
+	 
+	// чтобы понять как перешли в форму AlarmActivity
+	 public static Boolean isAddClicked = false;  // перешли по нажатию кнопки Добавить будильник
+	 public static Boolean isUpdateClicked = false; // перешли по нажатию Изменить будильник
+	 
+	 public static int position = 0;  // позиция выбранного пункта меню
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		btnAddAlarm.setOnClickListener(this);
 		
 		// создаем адаптер
-	    fillData();
+	   // fillData();
 	    boxAdapter = new BoxAdapter(this, alarms);
 	    
 	    // настраиваем список
@@ -45,10 +50,47 @@ public class MainActivity extends Activity implements OnClickListener {
 	    lvMain.setAdapter(boxAdapter);
 	    
 	    
-	    registerForContextMenu(lvMain);	    
+	    registerForContextMenu(lvMain);	 
+	    Toast.makeText(this, "Окно создано!" + isUpdateClicked, Toast.LENGTH_SHORT).show();
+/*	    
+	    // если вернулись с формы AlarmActivity для сохранения изменений
+	    if (isUpdateClicked){
+	    	Intent intent = getIntent();
+		    String alarmName = intent.getStringExtra("alarmName");
+		    String alarmTime = intent.getStringExtra("alarmTime");
+		    String alarmDays = intent.getStringExtra("alarmDays");
+		    
+	
+		    String strHour = alarmTime.substring(0,2);  // часы
+		    String strMinute = alarmTime.substring(3,5);  // минуты
+		    Toast.makeText(this, "alarms.size() = " + alarms.size(), Toast.LENGTH_SHORT).show();
+		    
+		    Alarm data = alarms.get(position);  // просто инициируем любыми данными
+		    data.name = alarmName;
+		    data.hour = 33;//Integer.parseInt(strHour);
+		    data.minute = 22;//Integer.parseInt(strMinute);
+		    data.days = "пн, вт";
+		    data.box = true;
+		    
+		    alarms.set(position, data);  // заменим старую запись на новую
+		    
+		    // уведомляем, что данные изменились
+		    boxAdapter.notifyDataSetChanged();
+	    }
+*/	    
+	    // уведомляем, что данные изменились
+	    boxAdapter.notifyDataSetChanged();
+	    
 	}
 	
-
+	  @Override
+	  protected void onResume() {
+	    super.onResume();
+	    Log.d("TAG", "MainActivity: onResume()");
+	    MainActivity.isUpdateClicked = false;  // сбрасываем значение глоб переменной
+	  }
+	  
+	  
 	  @Override
 	  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		  
@@ -57,7 +99,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		  AdapterContextMenuInfo aMenuInfo = (AdapterContextMenuInfo) menuInfo;
 		  
 		  // Получаем позицию элемента в списке
-		  int position = aMenuInfo.position;
+		  position = aMenuInfo.position;
 			
 		  // Получаем данные элемента списка
 		  Alarm data =(Alarm)boxAdapter.getItem(aMenuInfo.position);
@@ -65,10 +107,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		  
 		  menu.setHeaderTitle(String.format("%02d:%02d", data.hour, data.minute));
 		  menu.add(0, CM_DELETE_ID, 0, "Удалить запись");
+		  menu.add(0, CM_UPDATE_ID, 1, "Изменить запись");
 	  }
 	  
 	  @Override
 	  public boolean onContextItemSelected(MenuItem item) {
+		  
 	    if (item.getItemId() == CM_DELETE_ID) {
 	      // получаем инфу о пункте списка
 	      AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -78,6 +122,31 @@ public class MainActivity extends Activity implements OnClickListener {
 	      boxAdapter.notifyDataSetChanged();
 	      return true;
 	    }
+	    
+	    if (item.getItemId() == CM_UPDATE_ID) {
+	    	isUpdateClicked = true;
+		    // получаем инфу о пункте списка
+		    AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
+		    
+		    Alarm data =(Alarm)boxAdapter.getItem(acmi.position);
+		    
+		    Intent intent = new Intent(this, AlarmActivity.class); 
+		   	    
+		    
+		    // передаем все поля в форму AlarmActivity
+		    intent.putExtra("name", data.name);
+		    intent.putExtra("hour", data.hour);
+		    intent.putExtra("minute", data.minute);
+		    intent.putExtra("days", data.days);
+		    intent.putExtra("box", data.box);
+			  
+		    //startActivity(intent);
+		    
+		    //Intent intent2 = new Intent(this, AlarmActivity.class);
+		    startActivityForResult(intent, 2);
+		    
+		    return true;
+	    }
 	    return super.onContextItemSelected(item);
 	  }
 	  
@@ -85,9 +154,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	// Нажали добавить будильник
 	  public void onClick(View v) {
-	    // выводим сообщение
-	    Toast.makeText(this, "Зачем вы нажали добавить будильник?", Toast.LENGTH_SHORT).show(); 
-	    
+
 	    Intent intent = new Intent(this, AlarmActivity.class);
 	    startActivityForResult(intent, 1);
 	  }
@@ -95,29 +162,60 @@ public class MainActivity extends Activity implements OnClickListener {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	if (data == null) {return;}
-	    String alarmName = data.getStringExtra("alarmName");
-	    String alarmTime = data.getStringExtra("alarmTime");
-	    String alarmDays = data.getStringExtra("alarmDays");
+		
+		Toast.makeText(this, "requestCode = " + requestCode, Toast.LENGTH_SHORT).show();
+		
+		 // запишем в лог значения requestCode и resultCode
+	    Log.d("myLogs", "requestCode = " + requestCode + ", resultCode = " + resultCode);
 	    
+	    if (data == null) {return;}
+	    
+	 // если пришло ОК
+	    if (resultCode == RESULT_OK) {
+	    	if (requestCode == 1) {
+			    String alarmName = data.getStringExtra("alarmName");
+			    String alarmTime = data.getStringExtra("alarmTime");
+			    String alarmDays = data.getStringExtra("alarmDays");
+			    
+		
+			    String strHour = alarmTime.substring(0,2);  // часы
+			    String strMinute = alarmTime.substring(3,5);  // минуты
+			    
+			    alarms.add(new Alarm(alarmName, Integer.parseInt(strHour), Integer.parseInt(strMinute), "пн, вт", true));
+			    
+			    
+			    // уведомляем, что данные изменились
+			    boxAdapter.notifyDataSetChanged();
+	    	}
+	    	if (requestCode == 2) {
+			    String alarmName = data.getStringExtra("alarmName");
+			    String alarmTime = data.getStringExtra("alarmTime");
+			    String alarmDays = data.getStringExtra("alarmDays");
+			    
+		
+			    String strHour = alarmTime.substring(0,2);  // часы
+			    String strMinute = alarmTime.substring(3,5);  // минуты
+			    
+			    Toast.makeText(this, "alarms.size() = " + alarms.size(), Toast.LENGTH_SHORT).show();
+			    
+			    Alarm alarm = alarms.get(position);  // просто инициируем любыми данными
+			    alarm.name = alarmName;
+			    alarm.hour = Integer.parseInt(strHour);
+			    alarm.minute = Integer.parseInt(strMinute);
+			    alarm.days = "пн, вт";
+			    alarm.box = true;
+			    
+			    alarms.set(position, alarm);  // заменим старую запись на новую
+			    
+			    // уведомляем, что данные изменились
+			    boxAdapter.notifyDataSetChanged();
+	    	}
+	    
+		    // если вернулось не ОК
+	    } else {
+	      Toast.makeText(this, "Wrong result", Toast.LENGTH_SHORT).show();
+	    }
 
-	    String strHour = alarmTime.substring(0,2);  // часы
-	    String strMinute = alarmTime.substring(3,5);  // минуты
-	    
-	    alarms.add(new Alarm(alarmName, Integer.parseInt(strHour), Integer.parseInt(strMinute), "пн, вт", true));
-	    
-	    
-	    // уведомляем, что данные изменились
-	    boxAdapter.notifyDataSetChanged();
-	    
-	    /* старое обновление ListView
-	    // уведомляем, что данные изменились
-	    boxAdapter = new BoxAdapter(this, alarms);
-	    
-	    // настраиваем список
-	    ListView lvMain = (ListView) findViewById(R.id.lvMain);
-	    lvMain.setAdapter(boxAdapter);
-	    */
 	  }
 	
 	// генерируем данные для адаптера
