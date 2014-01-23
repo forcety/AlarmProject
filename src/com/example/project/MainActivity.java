@@ -51,33 +51,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	    
 	    
 	    registerForContextMenu(lvMain);	 
-	    Toast.makeText(this, "Окно создано!" + isUpdateClicked, Toast.LENGTH_SHORT).show();
-/*	    
-	    // если вернулись с формы AlarmActivity для сохранения изменений
-	    if (isUpdateClicked){
-	    	Intent intent = getIntent();
-		    String alarmName = intent.getStringExtra("alarmName");
-		    String alarmTime = intent.getStringExtra("alarmTime");
-		    String alarmDays = intent.getStringExtra("alarmDays");
-		    
-	
-		    String strHour = alarmTime.substring(0,2);  // часы
-		    String strMinute = alarmTime.substring(3,5);  // минуты
-		    Toast.makeText(this, "alarms.size() = " + alarms.size(), Toast.LENGTH_SHORT).show();
-		    
-		    Alarm data = alarms.get(position);  // просто инициируем любыми данными
-		    data.name = alarmName;
-		    data.hour = 33;//Integer.parseInt(strHour);
-		    data.minute = 22;//Integer.parseInt(strMinute);
-		    data.days = "пн, вт";
-		    data.box = true;
-		    
-		    alarms.set(position, data);  // заменим старую запись на новую
-		    
-		    // уведомляем, что данные изменились
-		    boxAdapter.notifyDataSetChanged();
-	    }
-*/	    
+   
 	    // уведомляем, что данные изменились
 	    boxAdapter.notifyDataSetChanged();
 	    
