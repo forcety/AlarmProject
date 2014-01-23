@@ -13,6 +13,7 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -31,6 +32,7 @@ public class AlarmActivity extends Activity implements OnClickListener {
 	  int DIALOG_DAYS = 2;
 	  int myHour = 14;
 	  int myMinute = 35;
+	  String mydays = "";
 	  
 	  
 	  @Override
@@ -53,8 +55,11 @@ public class AlarmActivity extends Activity implements OnClickListener {
 	        
 	        int myHour = intent.getIntExtra("hour", 0);
 	        int myMinute = intent.getIntExtra("minute",0);
+	        mydays = intent.getStringExtra("days");
 	        
 	        tvAlarmTime.setText(String.format("%02d:%02d", myHour, myMinute));
+	        tvAlarmDays.setText(mydays);
+	        
 	    }
 	   
 	    // если перешли на эту форму через кнопку Добавить будильник
@@ -67,6 +72,12 @@ public class AlarmActivity extends Activity implements OnClickListener {
 	    }
         
         
+	  }
+	  
+	  @Override
+	  protected void onResume() {
+	    super.onResume();
+	    //mydays = "";
 	  }
 	  
 	  public void onAlarmTimeClick(View view) {
@@ -86,8 +97,25 @@ public class AlarmActivity extends Activity implements OnClickListener {
 		  }
 		  
 		  if (id == DIALOG_DAYS) {
+			  
 			  final boolean[] mCheckedItems = { false, false, false, false, false, false, false };
 	          final String[] checkDays = { "понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье" };
+	          final String[] checkDaysShort = { "пн", "вт", "ср", "чт", "пт", "сб", "вс" };
+	          
+			  // если перешли на эту форму через кнопку изменить будильник
+	          // отмечаем флажками дни недели, которые использовались для данного будильника
+			  if (MainActivity.isUpdateClicked){ 
+				  String [] array = TextUtils.split(mydays, ",");
+				    
+				    for (int i = 0; i < checkDaysShort.length; i++) {
+						for (int j = 0; j < array.length; j++) {
+							if (checkDaysShort[i].equals(array[j]))
+								mCheckedItems[i] = true;
+						}
+					} 
+			  }
+			  
+
 	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	          
 	          builder.setTitle("Дни недели")
@@ -108,14 +136,21 @@ public class AlarmActivity extends Activity implements OnClickListener {
                           @Override
                           public void onClick(DialogInterface dialog,
                                   int id) {
+                        	  mydays = "";  // очищаем переменную дни недели
                               StringBuilder state = new StringBuilder();
                               for (int i = 0; i < checkDays.length; i++) {
                                   state.append("" + checkDays[i]);
-                                  if (mCheckedItems[i])
+                                  if (mCheckedItems[i]){
+                                	  mydays = mydays + checkDaysShort[i] + ","; 
                                       state.append(" выбран\n");
+                                  }    
                                   else
                                       state.append(" не выбран\n");
                               }
+                              if (mydays.length() != 0)
+                            	  tvAlarmDays.setText(mydays.substring(0,mydays.length() - 1));  // выводим без последней запятой в строке
+                              else
+                            	  tvAlarmDays.setText("");
                               Toast.makeText(getApplicationContext(),
                                       state.toString(), Toast.LENGTH_LONG)
                                       .show();
@@ -127,8 +162,9 @@ public class AlarmActivity extends Activity implements OnClickListener {
                           @Override
                           public void onClick(DialogInterface dialog,
                                   int id) {
+                        	  mydays = "";  // очищаем переменную дни недели
                               dialog.cancel();
-
+                              
                           }
                       });
 	          return builder.create();
@@ -160,6 +196,7 @@ public class AlarmActivity extends Activity implements OnClickListener {
 		    intent.putExtra("alarmName", etAlarmName.getText().toString());
 		    intent.putExtra("alarmTime", tvAlarmTime.getText().toString());
 		    intent.putExtra("alarmDays", tvAlarmDays.getText().toString());
+		    
 		    
 		    setResult(RESULT_OK, intent);
 		    finish();

@@ -146,6 +146,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	    
 	 // если пришло ОК
 	    if (resultCode == RESULT_OK) {
+	    	
+	    	// добавление будильника
 	    	if (requestCode == 1) {
 			    String alarmName = data.getStringExtra("alarmName");
 			    String alarmTime = data.getStringExtra("alarmTime");
@@ -155,12 +157,15 @@ public class MainActivity extends Activity implements OnClickListener {
 			    String strHour = alarmTime.substring(0,2);  // часы
 			    String strMinute = alarmTime.substring(3,5);  // минуты
 			    
-			    alarms.add(new Alarm(alarmName, Integer.parseInt(strHour), Integer.parseInt(strMinute), "пн, вт", true));
-			    
+			    if (alarmDays.equals("Не выбрано"))
+			    	alarms.add(new Alarm(alarmName, Integer.parseInt(strHour), Integer.parseInt(strMinute), "", true));
+			    else
+			    	alarms.add(new Alarm(alarmName, Integer.parseInt(strHour), Integer.parseInt(strMinute), alarmDays, true));
 			    
 			    // уведомляем, что данные изменились
 			    boxAdapter.notifyDataSetChanged();
 	    	}
+	    	// изменение будильника
 	    	if (requestCode == 2) {
 			    String alarmName = data.getStringExtra("alarmName");
 			    String alarmTime = data.getStringExtra("alarmTime");
@@ -176,7 +181,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			    alarm.name = alarmName;
 			    alarm.hour = Integer.parseInt(strHour);
 			    alarm.minute = Integer.parseInt(strMinute);
-			    alarm.days = "пн, вт";
+			    alarm.days = alarmDays;
 			    alarm.box = true;
 			    
 			    alarms.set(position, alarm);  // заменим старую запись на новую
