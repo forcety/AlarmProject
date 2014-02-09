@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.example.project.MainActivity"
+            android:launchMode="singleTop"
             android:theme="@android:style/Theme.Black"
             android:label="Будильник" >
             <intent-filter>
@@ -29,6 +30,7 @@
             android:theme="@android:style/Theme.Black"
             android:label="Установить будильник" >
         </activity>
+        <receiver android:name="Receiver"></receiver>
     </application>
 
 </manifest>

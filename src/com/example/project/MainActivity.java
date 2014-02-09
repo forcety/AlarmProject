@@ -1,10 +1,16 @@
 package com.example.project;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -32,6 +38,14 @@ public class MainActivity extends Activity implements OnClickListener {
 	 public static Boolean isUpdateClicked = false; // перешли по нажатию Изменить будильник
 	 
 	 public static int position = 0;  // позиция выбранного пункта меню
+	 
+	 // для самого будильника
+	 NotificationManager nm;
+	 AlarmManager am;
+	 Intent intent1;
+	 Intent intent2;
+	 PendingIntent pIntent1;
+	 PendingIntent pIntent2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +69,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	    // уведомляем, что данные изменились
 	    boxAdapter.notifyDataSetChanged();
 	    
+	    // для самого будильника
+	    nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	    am = (AlarmManager) getSystemService(ALARM_SERVICE);
+	    
+	    intent1 = createIntent("action 1", "extra 1");
+	    pIntent1 = PendingIntent.getBroadcast(this, 0, intent1, 0);
+
+	    intent2 = createIntent("action 2", "extra 2");
+	    pIntent2 = PendingIntent.getBroadcast(this, 0, intent2, 0);
 	}
 	
 	  @Override
@@ -63,6 +86,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	    Log.d("TAG", "MainActivity: onResume()");
 	    MainActivity.isUpdateClicked = false;  // сбрасываем значение глоб переменной
 	  }
+	  
+	  
+	  
+	  Intent createIntent(String action, String extra) {
+		    Intent intent = new Intent(this, Receiver.class);
+		    intent.setAction(action);
+		    intent.putExtra("extra", extra);
+		    return intent;
+		  }
 	  
 	  
 	  @Override
@@ -164,6 +196,23 @@ public class MainActivity extends Activity implements OnClickListener {
 			    
 			    // уведомляем, что данные изменились
 			    boxAdapter.notifyDataSetChanged();
+			    
+			    Log.d("Log", "start");
+			    am.set(AlarmManager.RTC, System.currentTimeMillis() + 12000, pIntent1);
+			    
+			    
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(strHour));
+				calendar.set(Calendar.MINUTE, Integer.parseInt(strMinute));
+				calendar.set(Calendar.SECOND, 0);
+				
+				
+				
+				//    am.setRepeating(AlarmManager.ELAPSED_REALTIME,
+				//       SystemClock.elapsedRealtime() + 8000, 10000, pIntent2);
+				
+			    am.setRepeating(AlarmManager.RTC_WAKEUP, 
+			    	    calendar.getTimeInMillis(), 10000, pIntent2);
 	    	}
 	    	// изменение будильника
 	    	if (requestCode == 2) {

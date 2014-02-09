@@ -1,7 +1,10 @@
 package com.example.project;
 
 import java.util.ArrayList;
+
+import android.app.PendingIntent;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +60,7 @@ public class BoxAdapter extends BaseAdapter {
 	    // и картинка
 	    ((TextView) view.findViewById(R.id.tvAlarmTime)).setText(String.format("%02d:%02d", a.hour, a.minute));  // ЧЧ:ММ - формат времени
 	    ((TextView) view.findViewById(R.id.tvDaysOfWeek)).setText(a.days + "");
-/*
+
 	    CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);
 	    // присваиваем чекбоксу обработчик
 	    cbBuy.setOnCheckedChangeListener(myCheckChangList);
@@ -65,7 +68,7 @@ public class BoxAdapter extends BaseAdapter {
 	    cbBuy.setTag(position);
 	    // заполняем данными из товаров: в корзине или нет
 	    cbBuy.setChecked(a.box);
-	    */
+	    
 	    return view;
 	  }
 	 
@@ -98,6 +101,20 @@ public class BoxAdapter extends BaseAdapter {
 	  OnCheckedChangeListener myCheckChangList = new OnCheckedChangeListener() {
 	    public void onCheckedChanged(CompoundButton buttonView,
 	        boolean isChecked) {
+	    	
+	    	if (isChecked) 
+	    	{
+	    		Log.d("", "Чекбокс isChecked" );
+	    		Log.d("", getAlarm((Integer) buttonView.getTag()).name );
+	    	}
+	    	else 
+	    	{
+	    		Log.d("", "Чекбокс unChecked" );
+	    		Log.d("", getAlarm((Integer) buttonView.getTag()).name );
+	    	}
+	    	
+	    	
+
 	      // меняем данные будильника (в активен или нет)
 	    	getAlarm((Integer) buttonView.getTag()).box = isChecked;
 	    }
