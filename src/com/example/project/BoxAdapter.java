@@ -106,11 +106,18 @@ public class BoxAdapter extends BaseAdapter {
 	    	{
 	    		Log.d("", "Чекбокс isChecked" );
 	    		Log.d("", getAlarm((Integer) buttonView.getTag()).name );
+	    		
 	    	}
 	    	else 
 	    	{
 	    		Log.d("", "Чекбокс unChecked" );
 	    		Log.d("", getAlarm((Integer) buttonView.getTag()).name );
+	    		
+	    		int i = (Integer) buttonView.getTag();// номер позиции в списке
+	    		String s = Integer.toString(i);    		
+	    		Log.d("", s);
+	    		
+	    		MainActivity.am.cancel(MainActivity.pIntent2);
 	    	}
 	    	
 	    	

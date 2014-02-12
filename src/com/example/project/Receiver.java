@@ -33,8 +33,9 @@ public class Receiver extends BroadcastReceiver {
     	Toast.makeText(ctx, "—работал повтор€ющийс€ будильник є 2", Toast.LENGTH_LONG).show();
 	}
     
-    Intent intn = new Intent (ctx, MainActivity.class);
-    intn.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
-    ctx.startActivity (intn);
+    // вызываем активити в топ поверх всего
+//    Intent intn = new Intent (ctx, MainActivity.class);
+//    intn.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+//    ctx.startActivity (intn);
   }
 }

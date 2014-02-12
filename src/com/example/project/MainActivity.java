@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
 	
-	 ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+	 public static ArrayList<Alarm> alarms = new ArrayList<Alarm>();
 	 BoxAdapter boxAdapter;
 	 Button btnAddAlarm;
 	 
@@ -40,12 +40,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	 public static int position = 0;  // позиция выбранного пункта меню
 	 
 	 // для самого будильника
-	 NotificationManager nm;
-	 AlarmManager am;
-	 Intent intent1;
-	 Intent intent2;
-	 PendingIntent pIntent1;
-	 PendingIntent pIntent2;
+	 public static NotificationManager nm;
+	 public static AlarmManager am;
+	 public static Intent intent1;
+	 public static Intent intent2;
+	 public static PendingIntent pIntent1;
+	 public static PendingIntent pIntent2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
